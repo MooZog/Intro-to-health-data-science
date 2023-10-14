@@ -1,0 +1,102 @@
+SELECT max(result)
+FROM blood_test_results
+
+9.7
+
+
+SELECT avg(result)
+FROM blood_test_results
+
+4.8
+
+
+SELECT count (chi), postcode
+FROM demographic
+GROUP BY postcode
+
+count (chi)	postcode
+2	AB00 1LR
+2	AB01 3BM
+1	AB11 9TQ
+3	AB14 1VB
+2	AB18 9MI
+1	AB32 7EO
+2	AB36 4MK
+2	AB50 9TL
+
+
+
+SELECT *
+FROM demographic JOIN simd ON demographic.postcode=simd.postcode
+
+first_name	last_name	dob	chi	postcode	postcode	decile
+GREG	SMITH	1968-04-01 00:00:00	8604721935	AB18 9MI	AB18 9MI	2
+STEPHEN	SMITH	1994-06-15 00:00:00	6471235908	AB32 7EO	AB32 7EO	1
+MARK	DUNCAN	1981-10-18 00:00:00	3029548617	AB50 9TL	AB50 9TL	9
+JASON	BUCHAN	1937-05-06 00:00:00	7390654812	AB18 9MI	AB18 9MI	2
+EMMA	SIMPSON	2002-12-25 00:00:00	7539861024	AB00 1LR	AB00 1LR	6
+ANDREW	CAMERON	1998-03-15 00:00:00	6739850142	AB36 4MK	AB36 4MK	8
+MARK	SIMPSON	1967-09-01 00:00:00	5867139240	AB14 1VB	AB14 1VB	5
+JASON	SMITH	2010-06-12 00:00:00	2318560749	AB01 3BM	AB01 3BM	5
+ANDREW	BURNETT	2010-06-09 00:00:00	1054823769	AB11 9TQ	AB11 9TQ	7
+ANGELA	MCGREGOR	2003-08-18 00:00:00	1238095746	AB50 9TL	AB50 9TL	9
+JAMES	STEPHEN	2008-10-07 00:00:00	6573491820	AB00 1LR	AB00 1LR	6
+MARGARET	MACKIE	1920-08-06 00:00:00	2849537106	AB14 1VB	AB14 1VB	5
+GREG	GRANT	1968-03-07 00:00:00	8019346572	AB01 3BM	AB01 3BM	5
+ABBIE	ANDERSON	1924-04-06 00:00:00	8504192673	AB36 4MK	AB36 4MK	8
+ABBIE	STEPHEN	1980-03-18 00:00:00	9602853417	AB14 1VB	AB14 1VB	5
+
+
+SELECT count (*), decile
+FROM demographic JOIN simd ON demographic.postcode=simd.postcode
+GROUP BY decile
+
+count (*)	decile
+1	1
+2	2
+5	5
+2	6
+1	7
+2	8
+2	9
+
+SELECT first_name, last_name, demographic.chi
+FROM demographic JOIN infection_test_results 
+ON demographic.chi=infection_test_results.chi
+WHERE infection_test_results.result = "positive"
+
+first_name	last_name	chi
+ANDREW	CAMERON	6739850142
+MARK	SIMPSON	5867139240
+
+
+SELECT count (test), biochem_test_results.chi, first_name, last_name, test
+FROM biochem_test_results JOIN demographic
+ON demographic.chi=biochem_test_results.chi
+GROUP BY biochem_test_results.chi, first_name, last_name, test
+
+count (test)	chi	test	first_name	last_name
+1	1054823769	B12	ANDREW	BURNETT
+1	2318560749	CREA	JASON	SMITH
+1	2849537106	B12	MARGARET	MACKIE
+2	2849537106	CREA	MARGARET	MACKIE
+1	3029548617	Iron	MARK	DUNCAN
+2	5867139240	Iron	MARK	SIMPSON
+1	6573491820	B12	JAMES	STEPHEN
+1	6739850142	B12	ANDREW	CAMERON
+1	6739850142	CREA	ANDREW	CAMERON
+2	7390654812	B12	JASON	BUCHAN
+1	8019346572	Iron	GREG	GRANT
+2	8504192673	B12	ABBIE	ANDERSON
+1	8504192673	CREA	ABBIE	ANDERSON
+1	8604721935	B12	GREG	SMITH
+1	8604721935	Iron	GREG	SMITH
+1	9602853417	CREA	ABBIE	STEPHEN
+
+
+SELECT count (distinct biochem_test_results.chi)
+FROM biochem_test_results JOIN infection_test_results
+ON biochem_test_results.chi = infection_test_results.chi
+
+count (distinct biochem_test_results.chi)
+11
